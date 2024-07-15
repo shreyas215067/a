@@ -1,0 +1,58 @@
+#include <stdio.h>
+#define INFI 99
+
+int edges[10][3], n, wt[10][10];
+
+void prims();
+
+int main() {
+    int i, j;
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+    printf("Enter the cost matrix:\n");
+    for (i = 0; i < n; i++)
+        for (j = 0; j < n; j++)
+            scanf("%d", &wt[i][j]);
+    prims();
+    return 0;
+}
+
+void prims() {
+    int u[10], lowcost[10], visited[10];
+    int min, mincost = 0, i, j, v;
+
+    visited[0] = 1;
+    for (i = 1; i < n; i++) {
+        visited[i] = 0;
+        u[i] = 0;
+        lowcost[i] = wt[0][i];
+    }
+
+    for (i = 0; i < n - 1; i++) {
+        min = INFI;
+        for (j = 1; j < n; j++) {
+            if (lowcost[j] < min && !visited[j]) {
+                min = lowcost[j];
+                v = j;
+            }
+        }
+
+        edges[i][0] = u[v];
+        edges[i][1] = v;
+        mincost += lowcost[v];
+        visited[v] = 1;
+
+        for (j = 1; j < n; j++) {
+            if (wt[v][j] < lowcost[j] && !visited[j]) {
+                lowcost[j] = wt[v][j];
+                u[j] = v;
+            }
+        }
+    }
+
+    printf("The edges of the minimum cost spanning tree are:\n");
+    for (i = 0; i < n - 1; i++) {
+        printf("(%d, %d)\n", edges[i][0], edges[i][1]);
+    }
+    printf("Minimum cost of the spanning tree is: %d\n", mincost);
+}
